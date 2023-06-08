@@ -22,7 +22,7 @@ pipeline {
         }
         stage("Start Docker") {
             steps {
-                sh 'docker up -d --no-color --wait'
+                sh 'docker up'
                 sh 'docker ps'
             }
         }
