@@ -2,21 +2,31 @@ pipeline {
     agent any
 
     stages {
-        stage('Build') {
+        stage("Verify tooling") {
             steps {
-                sh 'composer install'
-                sh 'cp .env.example .env'
-                sh 'php artisan key:generate'
+                sh '''
+                    docker info
+                    docker version
+                    docker compose version
+                '''
+            }
+        }        
+        stage("Clear all running docker containers") {
+            steps {
+                script {
+                    try {
+                        sh 'docker rm -f $(docker ps -a -q)'
+                    } catch (Exception e) {
+                        echo 'No running container to clear up...'
+                    }
+                }
             }
         }
-        stage('Test') {
+        stage("Start Docker") {
             steps {
-                sh './vendor/bin/phpunit'
-            }
-        }
-        stage('Deploy') {
-            steps {
-                echo 'Deploying....'
+                sh 'docker compose up -d --no-color --wait'
+                sh 'docker compose ps'
+                // sh 'make up'
             }
         }
     }
