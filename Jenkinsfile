@@ -1,6 +1,5 @@
 pipeline {
     agent any
-
     stages {
         stage("Verify tooling") {
             steps {
@@ -26,7 +25,6 @@ pipeline {
             steps {
                 sh 'docker compose up -d --no-color --wait'
                 sh 'docker compose ps'
-                // sh 'make up'
             }
         }
     }
